@@ -15,3 +15,6 @@ Scotch.stratGraphOrder(strat, "n{sep=/levl<10?g:z;}")
 
 (p, ip, nb, cblk, tree) = Scotch.graphOrder(graph, strat)
 @show nb
+
+order = Scotch.orderAlloc()
+Scotch.graphOrderInit(graph, order, p, ip, nb, cblk, tree)

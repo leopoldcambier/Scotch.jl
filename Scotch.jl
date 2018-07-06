@@ -9,6 +9,9 @@ end
 mutable struct File
 end
 
+mutable struct Ordering
+end
+
 function version()
     ver = Cint[0]
     rel = Cint[0]
@@ -78,6 +81,7 @@ function stratGraphOrder(strat::Ptr{Strat}, st::String)
     err = ccall((:SCOTCH_stratGraphOrder, "libscotch.dylib"), Cint,
                 (Ptr{Strat}, Ptr{Char}),
                 strat, pointer(st))
+    err == 0 || error("Error in stratGraphOrder")
     return
 end
 
@@ -93,6 +97,20 @@ function graphOrder(graph::Ptr{Graph}, strat::Ptr{Strat})
             graph,       strat,      pointer(permtab), pointer(peritab), pointer(cblkptr), pointer(rangtab), pointer(treetab))
     err == 0 || error("Error in graphOrder")
     return (permtab, peritab, cblkptr[1], rangtab, treetab)
+end
+
+function orderAlloc()
+    optr = ccall((:SCOTCH_orderAlloc, "libscotch.dylib"), Ptr{Ordering}, ())
+    optr != C_NULL || error("Error in orderAlloc")
+    return optr
+end
+
+function graphOrderInit(graph::Ptr{Graph}, ordering::Ptr{Ordering}, permtab::Array{Cint,1}, peritab::Array{Cint,1}, cblkptr::Cint, rangtab::Array{Cint,1}, treetab::Array{Cint,1})
+    err = ccall((:SCOTCH_graphOrderInit, "libscotch.dylib"), Cint,
+                (Ptr{Graph}, Ptr{Ordering}, Ptr{Cint}, Ptr{Cint}, Ptr{Cint}, Ptr{Cint}, Ptr{Cint}),
+                graph, ordering, pointer(permtab), pointer(permtab), &cblkptr, pointer(rangtab), pointer(treetab))
+    err == 0 || error("Error in graphOrderInit")
+    return
 end
 
 end # module Scotch
