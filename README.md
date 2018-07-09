@@ -13,3 +13,5 @@ All function can be used as
 import Scotch
 
 Scotch.[scotch function](arguments)
+
+This is still very experimental and a work in progress
