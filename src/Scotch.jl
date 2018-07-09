@@ -98,6 +98,40 @@ function graphSize(graph::Ptr{Graph})
     return (nv[1], ne[1])
 end
 
+function graphFree(graph::Ptr{Graph})
+    ccall((:SCOTCH_graphFree, libscotch), Void,
+          (Ptr{Graph},),
+          graph)
+end
+
+function graphExit(graph::Ptr{Graph})
+    ccall((:SCOTCH_graphExit, libscotch), Void,
+          (Ptr{Graph},),
+          graph)
+end
+
+function graphStat(graph::Ptr{Graph})
+    A1 = Cint[0,0,0,0,0,0,0,0]
+    A2 = Cdouble[0,0,0,0,0,0]
+    @show A1, A2
+    ccall((:SCOTCH_graphStat, libscotch), Void, 
+          (Ptr{Graph},
+           Ptr{Cint}, Ptr{Cint}, Ptr{Cint}, Ptr{Cdouble}, Ptr{Cdouble},
+           Ptr{Cint}, Ptr{Cint},            Ptr{Cdouble}, Ptr{Cdouble},
+           Ptr{Cint}, Ptr{Cint}, Ptr{Cint}, Ptr{Cdouble}, Ptr{Cdouble}),
+          graph,
+          pointer(A1, 1), pointer(A1, 2), pointer(A1, 3), pointer(A2, 1), pointer(A2, 2),
+          pointer(A1, 4), pointer(A1, 5),                 pointer(A2, 3), pointer(A2, 4), 
+          pointer(A1, 6), pointer(A1, 7), pointer(A1, 8), pointer(A2, 5), pointer(A2, 6))
+    @show A1, A2
+    return (A1[1], A1[2], A1[3], A2[1], A2[2],
+            A1[4], A1[5],        A2[3], A2[4],
+            A1[6], A1[7], A1[8], A2[5], A2[6])
+end
+
+
+# Strategy
+
 function stratAlloc()
     strat = ccall((:SCOTCH_stratAlloc, libscotch), Ptr{Strat}, ())
     strat != C_NULL || error("Error in stratAlloc")
@@ -119,6 +153,14 @@ function stratGraphOrder(strat::Ptr{Strat}, st::String)
     err == 0 || error("Error in stratGraphOrder")
     return
 end
+
+function stratExit(strat::Ptr{Strat})
+    ccall((:SCOTCH_stratExit, libscotch), Void,
+          (Ptr{Strat},),
+          strat)
+end
+
+# Ordering
 
 function graphOrder(graph::Ptr{Graph}, strat::Ptr{Strat})
     (nv, ne) = graphSize(graph)
@@ -169,6 +211,12 @@ function graphOrderCheck(graph::Ptr{Graph}, ordering::Ptr{Ordering})
                 (Ptr{Graph}, Ptr{Ordering}),
                 graph, ordering)
     err == 0 || error("Error in graphOrderCheck")
+end
+
+function graphOrderExit(graph::Ptr{Graph}, ordering::Ptr{Ordering})
+    ccall((:SCOTCH_graphOrderExit, libscotch), Void,
+                (Ptr{Graph}, Ptr{Ordering}),
+                graph, ordering)
 end
 
 end # module Scotch
