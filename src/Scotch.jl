@@ -34,8 +34,6 @@ function graphAlloc()
     return graph
 end
 
-   # err += SCOTCH_graphInit(graph);
-   # err += SCOTCH_graphLoad(graph, file, baseval, flagval);
 function graphInit(graph::Ptr{Graph})
     err = ccall((:SCOTCH_graphInit, libscotch), Cint, 
                 (Ptr{Graph},), 
@@ -59,7 +57,7 @@ end
 
 function graphBuild(graph::Ptr{Graph}, A::SparseMatrixCSC{Tv, Ti}) where {Tv, Ti <: Integer}
     A.n == A.m || error("Matrix should be square")
-    # Creates graph with no selfloops, as required by Scotch
+    # Remove self loops
     vertnbr = A.n
     verttab = Ptr{Cint}(Libc.malloc(sizeof(Cint) * (vertnbr+1)))
     edgetab = Ptr{Cint}(Libc.malloc(sizeof(Cint) * length(A.rowval)))
@@ -77,7 +75,6 @@ function graphBuild(graph::Ptr{Graph}, A::SparseMatrixCSC{Tv, Ti}) where {Tv, Ti
         unsafe_store!(verttab, k, i+1)
     end
     # FIXME: resize edgetab to k
-    # Build graph
     err = ccall((:SCOTCH_graphBuild, libscotch), Cint,
           (Ptr{Graph}, Cint, Cint,    Ptr{Cint},  Ptr{Cint}, Ptr{Cint}, Ptr{Cint}, Cint,    Ptr{Cint},  Ptr{Cint}),
           graph,       1,    vertnbr, verttab,    C_NULL,    C_NULL,    C_NULL,    edgenbr, edgetab,    C_NULL)
@@ -101,7 +98,6 @@ function graphSize(graph::Ptr{Graph})
     return (nv[1], ne[1])
 end
 
-# Strategy
 function stratAlloc()
     strat = ccall((:SCOTCH_stratAlloc, libscotch), Ptr{Strat}, ())
     strat != C_NULL || error("Error in stratAlloc")
