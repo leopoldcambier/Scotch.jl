@@ -1,7 +1,7 @@
 
 module Scotch
 
-const libscotch = "src/libscotch.dylib"
+const libscotch = "/Users/lcambier/Stanford/SCOTCH.jl/src/libscotch.dylib"
 
 mutable struct Graph
 end
