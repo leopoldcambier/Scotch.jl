@@ -16,4 +16,4 @@ Scotch.[scotch function name](arguments)
 ```
 
 This is still very experimental and a work in progress
-See example.jl for an example
+See example.jl for an example.
