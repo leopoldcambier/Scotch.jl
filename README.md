@@ -17,3 +17,9 @@ Scotch.[scotch function name](arguments)
 
 This is still very experimental and a work in progress
 See example.jl for an example.
+
+An example of .juliarc.jl file
+
+```const SCOTCH_LIBSCOTCH = "[path to]/Scotch.jl/src/libscotch.dylib" # For libscotch.so/dylib to be found at runtime
+push!(LOAD_PATH, "[path to]/Scotch.jl/src") # For being able to do import Scotch
+```
