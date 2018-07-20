@@ -11,7 +11,8 @@ To use the library:
 
 All function can be used as
 
-```import Scotch
+```
+import Scotch
 Scotch.[scotch function name](arguments)
 ```
 
@@ -20,6 +21,7 @@ See example.jl for an example.
 
 An example of .juliarc.jl file
 
-```const SCOTCH_LIBSCOTCH = "[path to]/Scotch.jl/src/libscotch.dylib" # For libscotch.so/dylib to be found at runtime
+```
+const SCOTCH_LIBSCOTCH = "[path to]/Scotch.jl/src/libscotch.dylib" # For libscotch.so/dylib to be found at runtime
 push!(LOAD_PATH, "[path to]/Scotch.jl/src") # For being able to do import Scotch
 ```
